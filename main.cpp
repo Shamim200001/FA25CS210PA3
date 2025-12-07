@@ -154,7 +154,7 @@ bool dfs(int r, int c, const vector<vector<int>>& maze, vector<vector<bool>>& vi
                       parent_r[new_r][new_c] = r;
                       parent_c[new_r][new_c] = c;
 
-                     //this part will explore the neighbor
+                      //this part will explore the neighbor
                       //if path is found then it will go back and call stack
                       //if there is no path for neighbor then it will start from different direction
                       if (dfs(new_r, new_c, maze, visited, parent_r, parent_c, exit_r, exit_c)) {
