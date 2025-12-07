@@ -117,9 +117,56 @@ void printPath(pair<int,int> exitcell,
 // STUDENTS IMPLEMENT DFS HERE
 // Add arguments, return type, and logic
 // ----------------------------------------------------------
-// bool dfs(……) {
-//     // Your code here
-// }
+//
+bool dfs(int r, int c, const vector<vector<int>>& maze, vector<vector<bool>>& visited, vector<vector<int>>& parent_r, vector<vector<int>>& parent_c, int exit_r, int exit_c)
+{
+    int N = maze.size();
+    int M = maze[0].size();
+
+    //We have start with a base case for recursion
+    //This is the base case
+    //The base case will check if current cell is invalid and return false
+    //The conditions for the base case is out of bounds, wall, or already visited
+    if (r < 0 || r >= N || c < 0 || c >= M || maze[r][c] == 1 || visited[r][c]) {
+        return false;
+    }
+    //this part of code will mark the current cell as visited to stop revisiting
+        visited[r][c] = true;
+
+
+    //This Base case will check if we reached the exit
+    //after finding the exit then return true
+    if ( r == exit_r && c == exit_c) {
+            return true;
+        }
+        //this is recursive case is for  all directions
+        //This recursive case will calculate coordinates of neighbor cell
+        for (int i = 0; i < 4; i++) {
+            int new_r = r + dr[i];
+            int new_c = c + dc[i];
+
+              //This will check if neighbor is within maze bounds
+              //it will check the neighbor is open and yet not been visited
+              // it will set the parents before recursive call
+              //then it will link the child to parent_r and parent_c
+              if (new_r >= 0 && new_r < N && new_c >= 0 && new_c < M) {
+                  if (!visited[new_r][new_c] && maze[new_r][new_c] == 0) {
+                      parent_r[new_r][new_c] = r;
+                      parent_c[new_r][new_c] = c;
+
+                     //this part will explore the neighbor
+                      //if path is found then it will go back and call stack
+                      //if there is no path for neighbor then it will start from different direction
+                      if (dfs(new_r, new_c, maze, visited, parent_r, parent_c, exit_r, exit_c)) {
+                          return true;
+              }
+           }
+        }
+     }
+    //return false if there is no path found from the call
+    return false;
+}
+
 
 
 // ----------------------------------------------------------
@@ -159,17 +206,25 @@ int main() {
     // STUDENT WORK:
     // Call your DFS, track visited, and fill parent_r and parent_c
     // ------------------------------------------------------
-    // bool found = dfs(ent_r, ent_c, maze, visited, parent_r, parent_c, exit_r, exit_c);
+    //This will call DFS
+    //after calling DFs it will search for a pth to exit
+     bool found = dfs(ent_r, ent_c, maze, visited, parent_r, parent_c, exit_r, exit_c);
+
+    //This will stop the infinite loop while printing.
+    if (found) {
+        parent_r[ent_r][ent_c] = ent_r;
+        parent_c[ent_r][ent_c] = ent_c;
+    }
 
     // ------------------------------------------------------
     // STUDENT WORK:
     // If found, print the path
     // ------------------------------------------------------
-    // if (found) {
-    //     printPath(exitcell, parent_r, parent_c, ent_r, ent_c);
-    // } else {
-    //     cout << "\nNo path exists.\n";
-    // }
+   if (found) {
+        printPath(exitcell, parent_r, parent_c, ent_r, ent_c);
+    } else {
+        cout << "\nNo path exists.\n";
+   }
 
     return 0;
 }
